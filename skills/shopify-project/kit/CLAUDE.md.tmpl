@@ -1,0 +1,38 @@
+# __NAME__ — Shopify project
+
+<One or two lines: what the client sells, what we're delivering (new store / migration from X), and the approach (Shopify + apps for standard features; custom code only for …).>
+
+Workflow: use the `shopify-project` skill (`/shopify-project next` works the task list autonomously).
+
+## Project tracking — REQUIRED
+
+`TASKS.md` is the single source of truth for project status. After every completed task or answered **project** question (including subagent work), before ending your turn:
+
+1. Update task checkboxes in `TASKS.md` (`[x]` done, `[~]` partial, `[!]` blocked) with counts/notes inline.
+2. Add one line at the top of the **Activity Log**: `YYYY-MM-DD — what was done — task id(s)`.
+3. Update **Current phase** and **Last updated**.
+4. Add new blockers/client questions to **Blockers / Open Questions**; remove resolved ones.
+5. Work outside the listed tasks: log it, marked "out of scope of quote".
+
+Do not log or commit general questions unrelated to this client project.
+Subagents: include "update TASKS.md per CLAUDE.md when done" in every delegated prompt.
+Commit after each completed task (including the TASKS.md update) with a message naming the task id; don't commit for answers that changed nothing.
+Never tick a phase's "Client approved" line unless the user says the client approved / paid.
+
+## Environment
+
+- Store: `__STORE__` — store facts also in `.shopify-project.json` (read by `tools/gql.py`).
+- Theme: __THEME_LINE__
+- Live theme pushes: NOT authorized yet (push to an unpublished theme and share the preview). Change this line when the user authorizes `--allow-live`.
+- Storefront password: <fill in>.
+- Currency / markets: <fill in>.
+- Store data changes go through idempotent scripts in `migration/` using `tools/gql.py`.
+
+## Project rules
+
+- No hardcoded merchant content in the theme (menus, page text, prices live in the admin).
+- <Design rules, e.g. "built-in sections only".>
+
+## Client model
+
+<Durable facts learned from the client: SKU structure, fulfillment, who the contact is, approval steps.>
