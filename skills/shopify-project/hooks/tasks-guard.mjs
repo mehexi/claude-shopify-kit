@@ -43,7 +43,7 @@ function remember(p) {
   fs.writeFileSync(S("projects.json"), JSON.stringify(known));
 }
 
-const STORE_WRITE = /shopify +(theme +(push|publish|delete|rename)|store +execute.*--allow-mutations|app +deploy)|gql\.py[^|;&]*(mutation|@)|(python3?|node) +[^ ]*(migration|scripts)[\/\\]/;
+const STORE_WRITE = /shopify +(theme +(push|publish|delete|rename)|store +execute.*--allow-mutations|app +deploy)|gql\.py[^|;&]*(mutation|@)|(python3?|node) +(\.[\/\\])?(migration|scripts)[\/\\]/;
 
 if (mode === "prompt") {
   fs.writeFileSync(S("turn-start"), "");
