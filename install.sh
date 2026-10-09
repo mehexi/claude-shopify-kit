@@ -23,7 +23,9 @@ mkdir -p "$CLAUDE_DIR/skills" "$DATA"
 
 say "Linking shopify-project skill"
 dest="$CLAUDE_DIR/skills/shopify-project"
-if [ -e "$dest" ] && [ ! -L "$dest" ]; then mv "$dest" "$dest.bak.$(date +%s)"; warn "Old copy moved to $dest.bak.*"; fi
+if [ -e "$dest" ] && [ ! -L "$dest" ]; then mkdir -p "$DATA/backups"; mv "$dest" "$DATA/backups/shopify-project.$(date +%s)"; warn "Old copy moved to $DATA/backups/"; fi
+# Backups inside skills/ would load as duplicate skills (older installer put them there).
+for b in "$CLAUDE_DIR"/skills/shopify-project.bak.*; do [ -e "$b" ] && mkdir -p "$DATA/backups" && mv "$b" "$DATA/backups/"; done
 rm -f "$dest"; ln -s "$KIT/skills/shopify-project" "$dest" 2>/dev/null || cp -r "$KIT/skills/shopify-project" "$dest"
 chmod +x "$KIT/skills/shopify-project/scripts/"* "$KIT/skills/shopify-project/hooks/"* 2>/dev/null || true
 
@@ -35,6 +37,8 @@ for src in "$DATA/agent-skills"/shopify-*/; do
   s="$(basename "$src")"; d="$CLAUDE_DIR/skills/$s"
   [ -f "$src/SKILL.md" ] && [[ "$s" != *-test ]] || continue
   rm -rf "$d"; cp -r "$src" "$d"
+  # Their SKILL.md starts with an HTML comment before the frontmatter, which hides name/description from Claude.
+  node -e 'const f=process.argv[1],fs=require("fs");fs.writeFileSync(f,fs.readFileSync(f,"utf8").replace(/^\s*<!--[\s\S]*?-->\s*/,""))' "$d/SKILL.md"
   # Their bundled scripts use require/__filename inside ESM and crash on Node 22+; preload the shim.
   [ -d "$d/scripts" ] && node - "$SHIM" "$d"/scripts/*.js <<'JS'
 const fs = require("fs"), { pathToFileURL } = require("url");
